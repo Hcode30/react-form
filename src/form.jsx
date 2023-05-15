@@ -6,13 +6,26 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 const Form = () => {
   const schema = object().shape({
-    fullName: string().required('Full name is a required field'),
-    email: string().email().required(),
-    age: number().positive().integer().min(5).max(120).required(),
-    password: string().min(8).max(24).required(),
+    fullName: string().required('Full name is required'),
+    email: string().email().required('Email is required'),
+    age: number('Age must be a number')
+      .positive('Age must be a positive number')
+      .integer('Age must be an integer')
+      .min(8, 'Age must be minimum 8 years')
+      .max(150, 'Age must be maximum 150 years')
+      .typeError('Age must be a number')
+      .required('Age is required'),
+    password: string()
+      .min(8, 'Password should be minimum 8 characters')
+      .max(24, 'Password should be maximum 24 characters')
+      .notOneOf(
+        ['12345678', 'password123', ref('fullName'), ref('email'), null],
+        "Please don't use common passwords or personal info"
+      )
+      .required('Password is required'),
     password2: string()
       .oneOf([ref('password'), null], "Passwords don't match")
-      .required(),
+      .required('Confirming Passwords is required'),
   });
   const {
     register,
@@ -50,12 +63,12 @@ const Form = () => {
       <label htmlFor="age">
         Age
         <input
-          type="number"
+          type="text"
           id="age"
           placeholder="Age ..."
           {...register('age')}
         />
-        {errors.age && <p>Age must be in range of 5 to 120 years</p>}
+        {errors.age && <p>{errors.age.message}</p>}
       </label>
 
       <label htmlFor="password">
