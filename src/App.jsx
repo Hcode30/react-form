@@ -3,6 +3,7 @@ const App = () => {
   return (
     <>
       <Form />
+      <footer style={{ textAlign: 'center' }}>Made By HCode 2023</footer>
     </>
   );
 };
