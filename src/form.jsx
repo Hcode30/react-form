@@ -6,12 +6,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 const Form = () => {
   const schema = object().shape({
-    fullName: string().required(),
+    fullName: string().required('Full name is a required field'),
     email: string().email().required(),
     age: number().positive().integer().min(5).max(120).required(),
     password: string().min(8).max(24).required(),
     password2: string()
-      .oneOf([ref('password'), null])
+      .oneOf([ref('password'), null], "Passwords don't match")
       .required(),
   });
   const {
@@ -33,7 +33,7 @@ const Form = () => {
           placeholder="Full Name ..."
           {...register('fullName')}
         />
-        {errors.fullName && <p>Full name is a required field</p>}
+        {errors.fullName && <p>{errors.fullName.message}</p>}
       </label>
 
       <label htmlFor="email">
@@ -77,7 +77,7 @@ const Form = () => {
           placeholder="Confirm Password ..."
           {...register('password2')}
         />
-        {errors.password2 && <p>The passwords don&apos;t match</p>}
+        {errors.password2 && <p>{errors.password2.message}</p>}
       </label>
 
       <input type="submit" />
